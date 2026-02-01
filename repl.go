@@ -9,6 +9,8 @@ import (
 
 func startRepl() {
 	scanner := bufio.NewScanner(os.Stdin)
+	commandRegistry := getAvailableCommands()
+
 	for {
 		fmt.Print("Pokedex > ")
 		scanner.Scan()
@@ -18,8 +20,17 @@ func startRepl() {
 			continue
 		}
 
-		cmd := words[0]
-		fmt.Printf("Your command was: %s\n", cmd)
+		cmdName := words[0]
+		cmd, exists := commandRegistry[cmdName]
+		if !exists {
+			fmt.Println("Unknown command")
+			continue
+		}
+
+		err := cmd.callback()
+		if err != nil {
+			fmt.Printf("Error while executing command: %v", err)
+		}
 	}
 }
 
