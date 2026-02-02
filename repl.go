@@ -5,18 +5,27 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/Marcos-Pablo/pokedex-go-cli/internal/pokeapi"
 )
 
-func startRepl() {
-	scanner := bufio.NewScanner(os.Stdin)
+type config struct {
+	pokeapiClient       pokeapi.Client
+	previousLocationURL *string
+	nextLocationURL     *string
+}
+
+func startRepl(cfg *config) {
+	reader := bufio.NewScanner(os.Stdin)
 	commandRegistry := getAvailableCommands()
 
 	for {
 		fmt.Print("Pokedex > ")
-		scanner.Scan()
-		input := scanner.Text()
+		reader.Scan()
+		input := reader.Text()
 		words := cleanInput(input)
 		if len(words) == 0 {
+			fmt.Println("Command name not provided")
 			continue
 		}
 
@@ -27,7 +36,7 @@ func startRepl() {
 			continue
 		}
 
-		err := cmd.callback()
+		err := cmd.callback(cfg)
 		if err != nil {
 			fmt.Printf("Error while executing command: %v", err)
 		}
