@@ -30,13 +30,14 @@ func startRepl(cfg *config) {
 		}
 
 		cmdName := words[0]
+		args := words[1:]
 		cmd, exists := commandRegistry[cmdName]
 		if !exists {
 			fmt.Println("Unknown command")
 			continue
 		}
 
-		err := cmd.callback(cfg)
+		err := cmd.callback(cfg, args...)
 		if err != nil {
 			fmt.Printf("Error while executing command: %v", err)
 		}
