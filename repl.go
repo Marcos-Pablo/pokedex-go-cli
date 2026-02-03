@@ -40,7 +40,7 @@ func startRepl(cfg *config) {
 
 		err := cmd.callback(cfg, args...)
 		if err != nil {
-			fmt.Printf("Error while executing command: %v", err)
+			fmt.Printf("Error while executing command: %v\n", err)
 		}
 	}
 }
