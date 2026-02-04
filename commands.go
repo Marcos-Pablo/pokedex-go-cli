@@ -45,6 +45,11 @@ func getAvailableCommands() map[string]cliCommand {
 			description: "Inspect a pokemon in your pokedex",
 			callback:    commandInspect,
 		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Displays all pokemons in your pokedex",
+			callback:    commandPokedex,
+		},
 		"exit": {
 			name:        "exit",
 			description: "Exit the Pokedex",
@@ -143,6 +148,7 @@ func commandCatch(cfg *config, args ...string) error {
 		return nil
 	}
 	fmt.Printf("%s was caught!\n", pokemon.Name)
+	fmt.Println("You may now inspect it with the inspect command.")
 
 	cfg.pokedex[pokemon.Name] = pokemon
 
@@ -172,6 +178,20 @@ func commandInspect(cfg *config, args ...string) error {
 	fmt.Println("Types:")
 	for _, typeInfo := range pokemon.Types {
 		fmt.Println("  -", typeInfo.Type.Name)
+	}
+
+	return nil
+}
+
+func commandPokedex(cfg *config, args ...string) error {
+	if len(cfg.pokedex) == 0 {
+		fmt.Println("you have no pokemons in your pokedex")
+		return nil
+	}
+
+	fmt.Println("Your pokedex:")
+	for _, pokemon := range cfg.pokedex {
+		fmt.Printf(" - %s\n", pokemon.Name)
 	}
 
 	return nil
